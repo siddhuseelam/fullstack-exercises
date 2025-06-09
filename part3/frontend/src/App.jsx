@@ -160,8 +160,8 @@ const App = () => {
           setSuccessMessage(`Updated ${returnedContact.name}'s number successfully!`);
           setTimeout(() => setSuccessMessage(null), 3000);
         })
-        .catch(() => {
-          setErrorMessage(`Failed to update ${newName.trim()}. Contact may have been removed from server.`);
+        .catch((error) => {
+          setErrorMessage(error.response.data.error);
           setTimeout(() => setErrorMessage(null), 3000);
         });
       }
@@ -177,8 +177,8 @@ const App = () => {
          setSuccessMessage(`Added ${newContactObject.name}`);
          setTimeout(() => setSuccessMessage(null), 3000);
         })
-      .catch(() => {
-        setErrorMessage('Failed to add contact.');
+      .catch((error) => {
+        setErrorMessage(error.response.data.error);
         setTimeout(() => setErrorMessage(null), 3000);
       });
   }
