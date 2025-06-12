@@ -1,9 +1,16 @@
 const info = (...params) => {
-  console.log(...params)
+  if (process.env.NODE_ENV !== 'test') {
+    // Only log in non-test environments
+    console.log(...params)
+  }
 }
 
 const error = (...params) => {
-  console.error(...params)
+
+  if(process.env.NODE_ENV !== 'test') {
+    // Only log in non-test environments
+    console.error(...params)
+  }
 }
 
 module.exports = { info, error }
