@@ -35,6 +35,8 @@ test('blog identifier is named id', async () => {
   })
 })
 
+
+
 test('sending a post request to create a new blog', async()=> {
   const newBlog = {
     title: 'New Blog',
@@ -50,6 +52,34 @@ test('sending a post request to create a new blog', async()=> {
 
   const response = await api.get('/api/blogs')
   assert.deepStrictEqual(response.body.length, initialBlogs.length + 1)
+})
+
+
+test('deleting a blog', async()=>{
+  const blogs = await api.get('/api/blogs')
+  const blogToDelete = blogs.body[0]
+  await api
+    .delete(`/api/blogs/${blogToDelete.id}`)
+    .expect(204)
+  const response = await api.get('/api/blogs')
+  assert.strictEqual(response.body.length, initialBlogs.length - 1) 
+
+})
+
+test('updating a blog', async () => {
+  const blogs = await api.get('/api/blogs')
+  const blogToUpdate = blogs.body[0]
+  const updatedBlog = { ...blogToUpdate, likes: blogToUpdate.likes + 1 }
+
+  await api
+    .put(`/api/blogs/${blogToUpdate.id}`)
+    .send(updatedBlog)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const response = await api.get('/api/blogs')
+  const updatedBlogFromDb = response.body.find(blog => blog.id === blogToUpdate.id)
+  assert.strictEqual(updatedBlogFromDb.likes, blogToUpdate.likes + 1)
 })
 
 after(async () => {
