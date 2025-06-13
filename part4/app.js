@@ -4,13 +4,15 @@ const config  = require('./utils/config')
 const blogsRouter = require('./controllers/blogs')
 const logger = require('./utils/logger')
 const middleware = require('./utils/middleware')
+const cors = require('cors')
 
 const usersRouter = require('./controllers/users')
 
 const loginRouter = require('./controllers/login')
 
 const app = express()
-
+app.use(cors())
+app.use(express.json())
 
 const mongoUrl = config.MONGODB_URI
 mongoose.connect(mongoUrl)
@@ -26,8 +28,6 @@ mongoose.connect(mongoUrl)
 
 
 
-
-app.use(express.json())
 
 app.use('/api/login', loginRouter)
 app.use('/api/blogs', blogsRouter)
