@@ -8,6 +8,7 @@ import Togglable from './components/Togglable'
 
 
 
+
 const errorMessage = (message) => {
   const errorStyle = {
     color: 'red',
@@ -65,17 +66,40 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
+      console.log('Logged in user object:', user)  // Add this line
       setUser(user)
       blogService.setToken(user.token)
     }
   }, [])
+  const handleLike = async (id) =>{
+    try{
+      const blogToLike = blogs.find(blog => blog.id === id)
+      const updatedBlog = {
+        title: blogToLike.title,
+        author: blogToLike.author,
+        url: blogToLike.url,
+        likes: blogToLike.likes + 1,
+        user: blogToLike.user ? blogToLike.user.id : null  // Send only the user ID, not the whole user object
+      }
+      const response = await blogService.update(id, updatedBlog)
+      setBlogs(blogs.map(blog => blog.id !== id ? blog : response))
 
+    }
+    catch(exception){
+      console.error('Error liking blog:', exception)
+      setError('Failed to like the blog')
+      setTimeout(() => {
+        setError(null)
+      }, 1000)
+    }
+  }
 
   const handleLogin = async (credentials) => {
     try {
       const response  = await blogService.login(credentials)
       if (response.token) {
-        console.log('Login successful:', response)
+        console.log('Login successful, full response:', response)
+        console.log('User ID from response:', response._id)
         window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(response))
         setUser(response)
         blogService.setToken(response.token)
@@ -116,6 +140,27 @@ const App = () => {
     }
   }
 
+  const handleRemove = async (id) => {
+    try{
+
+      await blogService.remove(id)
+      setBlogs(blogs.filter(blog => blog.id !== id))
+      setSuccess('Blog removed successfully')
+      setTimeout(() => {
+        setSuccess(null)
+      }, 1000)
+
+
+    }
+    catch(exception){
+      console.error('Error removing blog:', exception)
+      setError('Failed to remove the blog')
+      setTimeout(() => {
+        setError(null)
+      }, 1000)
+    }
+  }
+
   return (
     <>
     {error && errorMessage(error)}
@@ -133,10 +178,14 @@ const App = () => {
     <Togglable buttonLabel="new blog">
       <CreateBlog createBlog={createBlog} />
     </Togglable>
-    <div>
-
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+    <div>      {blogs.map(blog =>
+<Blog
+  key={blog.id}
+  blog={blog}
+  handleLike={handleLike}
+  handleRemove={handleRemove}
+  showRemoveButton={user && blog.user && blog.user._id === user._id}
+/>
       )}
 
     </div>
