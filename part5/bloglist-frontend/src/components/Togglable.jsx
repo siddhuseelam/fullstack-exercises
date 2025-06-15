@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import Proptypes from 'prop-types'
 
 const Togglable = (props) =>{
     
@@ -23,5 +24,7 @@ const Togglable = (props) =>{
         </div>
     )
 }
+
+
 
 export default Togglable
