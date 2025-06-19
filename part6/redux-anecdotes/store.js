@@ -63,7 +63,26 @@ const filterSlice = createSlice({
             return action.payload
         }
     }
-})
+
+}
+)
+
+
+export const createNewAnecdote = (content) =>{
+    return async dispatch => {
+        const newAnecdote = await anecdoteServices.save(content)
+        dispatch(createAnecdote(newAnecdote))
+    }
+}
+
+export const  initialiseAnecdotes = () =>{
+    return async dispatch =>{
+        const anecdotes = await anecdoteServices.getAll()
+        dispatch(setAnecdotes(anecdotes))
+    }
+    }
+
+
 export const {setNotification,removeNotification} = notificationSlice.actions
 export const {createAnecdote, voteAnecdote,setAnecdotes} = noteSlice.actions
 export const {setFilter} = filterSlice.actions
