@@ -44,7 +44,7 @@ const noteSlice = createSlice({
 
 const notificationSlice = createSlice({
     name:'notification',
-    initialState:'hello ',
+    initialState:'',
     reducers:{
         setNotification(state, action){
             return action.payload
@@ -81,7 +81,22 @@ export const  initialiseAnecdotes = () =>{
         dispatch(setAnecdotes(anecdotes))
     }
     }
+export const voteAnecdoteAction = (id) =>{
+    return async dispatch =>{
+       const response =  await anecdoteServices.update(id)
+        dispatch(voteAnecdote(response.id))
+    }
+}
 
+export const setNotificationAction = (message,timeout) =>{
+    return async dispatch =>{
+        dispatch(setNotification(message))
+        setTimeout(()=>{
+            dispatch(removeNotification())
+        },timeout)
+    }
+}
+    
 
 export const {setNotification,removeNotification} = notificationSlice.actions
 export const {createAnecdote, voteAnecdote,setAnecdotes} = noteSlice.actions
