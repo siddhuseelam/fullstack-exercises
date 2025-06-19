@@ -56,4 +56,19 @@ const reducer = (state = initialState, action) => {
   return state
 }
 
+export const filterReducer = (state = '', action) => {
+  if (action.type === 'SET_FILTER') {
+    return action.payload.filter
+  }
+  return state
+}
+
+
+export const setFilterActionCreator = (filter) => {
+  return {
+    type: 'SET_FILTER',
+    payload: { filter }
+  }
+}
+
 export default reducer
