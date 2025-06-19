@@ -28,13 +28,33 @@ const noteSlice = createSlice({
     ,
     reducers:{
         createAnecdote(state,action){
-            return state.concat(action.payload)
+            return state.concat(asObject(action.payload))
         },
         voteAnecdote(state,action){
-            return state.map(anecdote => anecdote.id === action.payload.id ? {...anecdote, votes: anecdote.votes + 1} : anecdote)
+            const id = action.payload
+            
+            const anecdote = state.find((a)=> a.id==id)
+            if(anecdote){
+                anecdote.votes+=1
+            }
+            
+            
         }
     }
     
+})
+
+const notificationSlice = createSlice({
+    name:'notification',
+    initialState:'hello ',
+    reducers:{
+        setNotification(state, action){
+            return action.payload
+        },
+        removeNotification(state,action){
+            return ''
+        }
+    }
 })
 
 const filterSlice = createSlice({
@@ -46,12 +66,13 @@ const filterSlice = createSlice({
         }
     }
 })
-
+export const {setNotification,removeNotification} = notificationSlice.actions
 export const {createAnecdote, voteAnecdote} = noteSlice.actions
 export const {setFilter} = filterSlice.actions
 export default configureStore({
     reducer: {
         anecdotes: noteSlice.reducer,
-        filter: filterSlice.reducer
+        filter: filterSlice.reducer,
+        notification:notificationSlice.reducer
     }
 })
