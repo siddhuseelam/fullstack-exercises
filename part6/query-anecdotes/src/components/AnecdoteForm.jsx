@@ -15,7 +15,14 @@ const AnecdoteForm = () => {
     mutationFn: requests.createAnecdote,
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey:['anecdotes']})
-    }
+    },
+
+    onError: () => {
+      notificationDispatch({type:'SET_NOTIFICATION',payload:'failed to create new anecdote'})
+      setTimeout(()=>{
+        notificationDispatch({type:'CLEAR_NOTIFICATION'})
+      },5000)
+},
    
   } )
 
@@ -25,12 +32,18 @@ const AnecdoteForm = () => {
     if(content.length > 5){
       newAnecdoteMutation.mutate({content,votes:0})
 
+      notificationDispatch({type:'SET_NOTIFICATION',payload:`new anecdote created with content ${content}`})
+      setTimeout(()=>{
+        notificationDispatch({type:'CLEAR_NOTIFICATION'})
+      },5000)
+    }
+    else{
+      notificationDispatch({type:'SET_NOTIFICATION',payload:`content is too short length is less than 5`})
+      setTimeout(()=>{
+        notificationDispatch({type:'CLEAR_NOTIFICATION'})
+      },5000)
     }
 
-    notificationDispatch({type:'SET_NOTIFICATION',payload:`new anecdote created with content ${content}`})
-    setTimeout(()=>{
-      notificationDispatch({type:'CLEAR_NOTIFICATION'})
-    },5000)
 
     event.target.anecdote.value = ''
     console.log('new anecdote')
