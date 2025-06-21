@@ -4,6 +4,7 @@ import {
   BrowserRouter as Router,
   Routes, Route, Link,useMatch,useNavigate
 } from 'react-router-dom'
+import { useFiled } from './hooks'
 
 const Menu = () => {
   const padding = {
@@ -62,9 +63,12 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
+  
+
+  const content = useFiled('content')
+  const author = useFiled('author')
+  const info = useFiled('info')
+
 
   const navigate = useNavigate()
 
@@ -85,17 +89,23 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+          <input name='content' value={content.value} onChange={content.onChange} />
         </div>
         <div>
           author
-          <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+          <input name='author' value={author.value} onChange={author.onChange} />
         </div>
         <div>
           url for more info
-          <input name='info' value={info} onChange={(e)=> setInfo(e.target.value)} />
+          <input name='info'  value={info.value} onChange={info.onChange} />
         </div>
         <button>create</button>
+        <button type="button" onClick={() => {
+  content.reset()
+  author.reset()
+  info.reset()
+}}>reset</button>
+        
       </form>
     </div>
   )
